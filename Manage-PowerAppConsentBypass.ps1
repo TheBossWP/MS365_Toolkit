@@ -1,11 +1,11 @@
 <#
 .SYNOPSIS
-Provides helper functions to toggle bypassing user consent for specific Power Apps APIs.
+Provides helper functions to set or clear bypassing of user consent for a Power App's APIs.
 
 .DESCRIPTION
-This script exposes two functions that wrap the Set-AdminPowerAppApisToBypassConsent cmdlet.
-Use these functions to enable or disable the bypass of user consent prompts for a connector
-within a given Power Platform environment.
+This script exposes two functions that wrap the Set-AdminPowerAppApisToBypassConsent and
+Clear-AdminPowerAppApisToBypassConsent cmdlets. Use these functions to enable or disable the
+user consent bypass for an app within a given Power Platform environment.
 
 .NOTES
 Requires the Microsoft.PowerApps.Administration.PowerShell module and an authenticated
@@ -15,21 +15,24 @@ administrator session using Add-PowerAppsAccount.
 function Enable-PowerAppConsentBypass {
     <#
     .SYNOPSIS
-    Enables bypassing of user consent for a specific API (connector).
+    Enables bypassing of user consent for a Power App.
 
     .DESCRIPTION
-    Calls Set-AdminPowerAppApisToBypassConsent with BypassConsent set to $true. This allows
-    the specified connector to be used without individual user consent in the target environment.
+    Calls Set-AdminPowerAppApisToBypassConsent so that the specified app can use its APIs without
+    requiring individual user consent in the target environment.
 
     .PARAMETER EnvironmentName
-    The name or GUID of the Power Platform environment where the policy will be applied.
+    The name or GUID of the Power Platform environment where the app resides.
 
-    .PARAMETER ApiName
-    The name of the API/connector to allow without consent prompts.
+    .PARAMETER AppName
+    The name of the Power App for which consent bypass should be enabled.
+
+    .PARAMETER ApiVersion
+    Optional API version if a specific version is required.
 
     .EXAMPLE
-    Enable-PowerAppConsentBypass -EnvironmentName "Default-1234" -ApiName "shared_sharepointonline"
-    Enables bypass consent for the SharePoint Online connector in the Default environment.
+    Enable-PowerAppConsentBypass -EnvironmentName "Default-1234" -AppName "MyPowerApp"
+    Enables consent bypass for the app named MyPowerApp in the Default environment.
     #>
     [CmdletBinding()]
     param(
@@ -37,30 +40,38 @@ function Enable-PowerAppConsentBypass {
         [string]$EnvironmentName,
 
         [Parameter(Mandatory=$true)]
-        [string]$ApiName
+        [string]$AppName,
+
+        [Parameter(Mandatory=$false)]
+        [string]$ApiVersion
     )
 
-    Set-AdminPowerAppApisToBypassConsent -EnvironmentName $EnvironmentName -ApiName $ApiName -BypassConsent $true
+    $params = @{EnvironmentName = $EnvironmentName; AppName = $AppName}
+    if ($PSBoundParameters.ContainsKey('ApiVersion')) { $params.ApiVersion = $ApiVersion }
+    Set-AdminPowerAppApisToBypassConsent @params
 }
 
 function Disable-PowerAppConsentBypass {
     <#
     .SYNOPSIS
-    Disables bypassing of user consent for a specific API (connector).
+    Disables bypassing of user consent for a Power App.
 
     .DESCRIPTION
-    Calls Set-AdminPowerAppApisToBypassConsent with BypassConsent set to $false. This requires
-    users to grant consent before using the specified connector in the target environment.
+    Calls Clear-AdminPowerAppApisToBypassConsent so that the specified app once again requires
+    user consent for its APIs in the target environment.
 
     .PARAMETER EnvironmentName
-    The name or GUID of the Power Platform environment where the policy will be applied.
+    The name or GUID of the Power Platform environment where the app resides.
 
-    .PARAMETER ApiName
-    The name of the API/connector that should require user consent.
+    .PARAMETER AppName
+    The name of the Power App for which consent bypass should be disabled.
+
+    .PARAMETER ApiVersion
+    Optional API version if a specific version is required.
 
     .EXAMPLE
-    Disable-PowerAppConsentBypass -EnvironmentName "Default-1234" -ApiName "shared_sharepointonline"
-    Disables bypass consent for the SharePoint Online connector in the Default environment.
+    Disable-PowerAppConsentBypass -EnvironmentName "Default-1234" -AppName "MyPowerApp"
+    Removes consent bypass for the app named MyPowerApp in the Default environment.
     #>
     [CmdletBinding()]
     param(
@@ -68,13 +79,18 @@ function Disable-PowerAppConsentBypass {
         [string]$EnvironmentName,
 
         [Parameter(Mandatory=$true)]
-        [string]$ApiName
+        [string]$AppName,
+
+        [Parameter(Mandatory=$false)]
+        [string]$ApiVersion
     )
 
-    Set-AdminPowerAppApisToBypassConsent -EnvironmentName $EnvironmentName -ApiName $ApiName -BypassConsent $false
+    $params = @{EnvironmentName = $EnvironmentName; AppName = $AppName}
+    if ($PSBoundParameters.ContainsKey('ApiVersion')) { $params.ApiVersion = $ApiVersion }
+    Clear-AdminPowerAppApisToBypassConsent @params
 }
 
 # Example calls
-# Enable-PowerAppConsentBypass -EnvironmentName "Default-1234" -ApiName "shared_sharepointonline"
-# Disable-PowerAppConsentBypass -EnvironmentName "Default-1234" -ApiName "shared_sharepointonline"
+# Enable-PowerAppConsentBypass -EnvironmentName "Default-1234" -AppName "MyPowerApp"
+# Disable-PowerAppConsentBypass -EnvironmentName "Default-1234" -AppName "MyPowerApp"
 
