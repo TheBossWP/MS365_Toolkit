@@ -10,6 +10,7 @@ This repository contains a collection of PowerShell scripts and reusable functio
 - **Bulk-Create-AzureAD-Users.ps1** – Create multiple users in Azure AD from a CSV file containing their details.
 - **Export-All-PowerAutomate-Flows-With-Owners.ps1** – Export all Power Automate flows across the tenant along with the flow owner into `AllFlowsAndOwners.csv`.
 - **Export-PrivilegedRoleUsers.ps1** – Save a list of users holding a chosen privileged role to a CSV file.
+- **Manage-PowerAppsConsentBypass.ps1** – Demonstrates managing the Power Apps consent dialog by using `Set-AdminPowerAppApisToBypassConsent` and `Clear-AdminPowerAppApisToBypassConsent` to allow or remove bypass consent for an app.
 - **M365_Infrastructure_Automation-english.ps1** – Script containing reusable functions (documented below) written in English.
 - **M365_Infrastructure_Automation.ps1** – Hebrew version of the same functions.
 
