@@ -10,6 +10,9 @@
 # 2. Authenticate to the Power Apps service with an administrator account:
 #    Add-PowerAppsAccount
 #    Add-AdminPowerAppsAccount
+# 3. Ensure the app is already shared with the same user running this script.
+# 4. Permissions required: Global Admin, Power Platform Admin, or Dynamics 365
+#    Administrator, and Environment Admin for the app's environment.
 #
 # After the prerequisites are met, update the variables below and
 # run either example to set or clear the bypass consent feature.
